@@ -5,7 +5,7 @@
 set(MY_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 # Add source to this project's executable.
-add_executable (31-2-smart-pointer-implementation "main.cpp"  ${MY_INCLUDE_DIR}/dog.h "dog.cpp" ${MY_INCLUDE_DIR}/shared_ptr_toy.h "shared_ptr_toy.cpp" ${MY_INCLUDE_DIR}/functions.h "functions.cpp")
+add_executable (31-2-smart-pointer-implementation "main.cpp"  ${MY_INCLUDE_DIR}/dog.h "dog.cpp" ${MY_INCLUDE_DIR}/shared_ptr_toy.h "shared_ptr_toy.cpp" ${MY_INCLUDE_DIR}/functions.h "functions.cpp" ${MY_INCLUDE_DIR}/toy.h "toy.cpp")
 
 target_include_directories(31-2-smart-pointer-implementation PUBLIC ${CMAKE_SOURCE_DIR}/include)
 

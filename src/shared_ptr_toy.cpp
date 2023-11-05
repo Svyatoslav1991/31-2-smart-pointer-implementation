@@ -1,13 +1,13 @@
 #include "shared_ptr_toy.h"
 
-shared_ptr_toy::shared_ptr_toy(const std::string& name) : m_name(name), m_refCount(new int(1))
+shared_ptr_toy::shared_ptr_toy(const std::string& name) : m_toy(new Toy(name)), m_refCount(new int(1))
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-shared_ptr_toy::shared_ptr_toy(const shared_ptr_toy& other) : m_name(other.m_name), m_refCount(other.m_refCount)
+shared_ptr_toy::shared_ptr_toy(const shared_ptr_toy& other) : m_toy(other.m_toy), m_refCount(other.m_refCount)
 {
 	if (m_refCount)
 	{
@@ -17,8 +17,9 @@ shared_ptr_toy::shared_ptr_toy(const shared_ptr_toy& other) : m_name(other.m_nam
 
 //--------------------------------------------------------------------------------------------------
 
-shared_ptr_toy::shared_ptr_toy(shared_ptr_toy&& other) noexcept : m_name(std::move(other.m_name)), m_refCount(other.m_refCount)
+shared_ptr_toy::shared_ptr_toy(shared_ptr_toy&& other) noexcept : m_toy(std::move(other.m_toy)), m_refCount(other.m_refCount)
 {
+	other.m_toy = nullptr;
 	other.m_refCount = nullptr;
 }
 
@@ -32,6 +33,7 @@ shared_ptr_toy::~shared_ptr_toy()
 		if (m_refCount == 0)
 		{
 			delete m_refCount;
+			delete m_toy;
 		}
 	}
 }
@@ -47,11 +49,12 @@ shared_ptr_toy& shared_ptr_toy::operator=(const shared_ptr_toy& other)
 			(*m_refCount)--;
 			if (m_refCount == 0)
 			{
+				delete m_toy;
 				delete m_refCount;
 			}
 		}
 
-		m_name = other.m_name;
+		m_toy = other.m_toy;
 		m_refCount = other.m_refCount;
 
 		if (m_refCount)
@@ -75,10 +78,11 @@ shared_ptr_toy& shared_ptr_toy::operator=(shared_ptr_toy&& other) noexcept
 			if (m_refCount == 0)
 			{
 				delete m_refCount;
+				delete m_toy;
 			}
 		}
 
-		m_name = std::move(other.m_name);
+		m_toy = std::move(other.m_toy);
 		m_refCount = other.m_refCount;
 
 		other.m_refCount = nullptr;
@@ -89,7 +93,7 @@ shared_ptr_toy& shared_ptr_toy::operator=(shared_ptr_toy&& other) noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-void shared_ptr_toy::reset()
+void shared_ptr_toy::reset() noexcept
 {
 	if (m_refCount)
 	{
@@ -97,16 +101,41 @@ void shared_ptr_toy::reset()
 		if (*m_refCount == 0)
 		{
 			delete m_refCount;
+			delete m_toy;
 		}
-	}
 
-	m_name = "empty";
-	m_refCount = new int(0);
+		m_toy = nullptr;
+		m_refCount = nullptr;
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
 
 std::string shared_ptr_toy::getName() const noexcept
 {
-	return m_name;
+	if (m_toy)
+	{
+		return m_toy->getName();
+	}
+	
+	return "empty";
+}
+
+//--------------------------------------------------------------------------------------------------
+
+Toy* shared_ptr_toy::get() const noexcept
+{
+	return m_toy;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+int shared_ptr_toy::use_count() const noexcept
+{
+	if (m_refCount)
+	{
+		return *m_refCount;
+	}
+
+	return 0;
 }

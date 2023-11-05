@@ -23,7 +23,32 @@ int main() {
 		shared_ptr_toy emptyToy;
 		dog2.getToy(emptyToy);
 
-		std::cout << dog2.getName() << "'s toy is " << emptyToy.getName() << "\n";
+		std::cout << dog2.getName() << "'s toy is " << emptyToy.getName() << "\n\n";
+
+		std::cout << "---------------------------------------------------------------------------\n\n";
+
+		shared_ptr_toy ball = make_shared_toy("ball");
+		shared_ptr_toy ball1 = make_shared_toy(ball);
+		shared_ptr_toy ball2 = ball;
+		shared_ptr_toy ball3(ball);
+
+		std::cout << ball.getName() << " = " << ball.use_count() << "\n";
+
+		ball1.reset();
+
+		std::cout << ball.getName() << " = " << ball.use_count() << "\n";
+
+		ball2.reset();
+
+		std::cout << ball.getName() << " = " << ball.use_count() << "\n";
+
+		ball3.reset();
+
+		std::cout << ball.getName() << " = " << ball.use_count() << "\n";
+
+		ball.reset();
+
+		std::cout << ball.getName() << " = " << ball.use_count() << "\n";
 	}
 	catch (const std::exception& e)
 	{
